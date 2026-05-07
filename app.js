@@ -103,7 +103,7 @@ function showToast(msg) {
 /* ==========================================
    PASSWORD GATE
    ========================================== */
-const PASSWORD    = 'ienai2026';   // change this to whatever you prefer
+const PASSWORD    = 'mw-ienai-0%';
 const SESSION_KEY = 'dt_authed';
 
 document.addEventListener('DOMContentLoaded', () => {
