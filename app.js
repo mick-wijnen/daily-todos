@@ -274,10 +274,11 @@ async function loadTodayTasks() {
 function renderPendingTasks(tasks) {
   const container  = document.getElementById('pending-tasks');
   const emptyState = document.getElementById('empty-pending');
-  container.innerHTML = '';
+  // Remove only task items — never innerHTML='' which detaches #empty-pending
+  // from the DOM and makes getElementById return null in updateEmptyState()
+  container.querySelectorAll('.task-item').forEach(el => el.remove());
 
   if (tasks.length === 0) {
-    container.appendChild(emptyState);
     emptyState.style.display = 'block';
     return;
   }
