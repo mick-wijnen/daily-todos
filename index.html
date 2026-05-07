@@ -10,6 +10,30 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- ===== PASSWORD GATE ===== -->
+  <div id="gate">
+    <div class="gate-box">
+      <div class="gate-logo">
+        <span class="logo-dot purple"></span>
+        <span class="logo-dot green"></span>
+      </div>
+      <p class="gate-brand-name">IENAI Space</p>
+      <h1 class="gate-title">Daily Todos</h1>
+      <form id="gate-form" class="gate-form">
+        <input
+          type="password"
+          id="gate-input"
+          class="form-input gate-input"
+          placeholder="Password"
+          autocomplete="current-password"
+        >
+        <button type="submit" class="btn-primary gate-btn">Unlock</button>
+      </form>
+      <p id="gate-error" class="gate-error">Incorrect password — try again.</p>
+    </div>
+  </div>
+
   <div id="app">
 
     <header class="app-header">

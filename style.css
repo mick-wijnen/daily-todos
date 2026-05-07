@@ -741,6 +741,99 @@ input, select, textarea, button {
 }
 
 /* ==========================================
+   PASSWORD GATE
+   ========================================== */
+#gate {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gate.hidden { display: none; }
+
+.gate-box {
+  width: 100%;
+  max-width: 300px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.gate-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.gate-logo .logo-dot {
+  width: 10px;
+  height: 10px;
+}
+
+.gate-brand-name {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  margin-top: -10px;
+}
+
+.gate-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.1;
+}
+
+.gate-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gate-input {
+  text-align: center;
+  font-size: 15px;
+  padding: 11px 14px;
+  letter-spacing: 0.1em;
+}
+
+.gate-btn {
+  width: 100%;
+  padding: 11px;
+  font-size: 13px;
+  justify-content: center;
+}
+
+.gate-error {
+  font-size: 12px;
+  color: var(--red);
+  display: none;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-7px); }
+  40%, 80% { transform: translateX(7px); }
+}
+
+.gate-form.shake { animation: shake 0.35s ease; }
+
+/* ==========================================
    RESPONSIVE
    ========================================== */
 @media (max-width: 520px) {

@@ -101,9 +101,53 @@ function showToast(msg) {
 }
 
 /* ==========================================
+   PASSWORD GATE
+   ========================================== */
+const PASSWORD    = 'ienai2026';   // change this to whatever you prefer
+const SESSION_KEY = 'dt_authed';
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    document.getElementById('gate').classList.add('hidden');
+    initApp();
+  } else {
+    initGate();
+  }
+});
+
+function initGate() {
+  const form  = document.getElementById('gate-form');
+  const input = document.getElementById('gate-input');
+  const error = document.getElementById('gate-error');
+
+  input.focus();
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (input.value === PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      document.getElementById('gate').classList.add('hidden');
+      initApp();
+    } else {
+      input.value = '';
+      error.style.display = 'block';
+      form.classList.remove('shake');
+      // Force reflow so re-adding the class re-triggers the animation
+      void form.offsetWidth;
+      form.classList.add('shake');
+      input.focus();
+    }
+  });
+
+  input.addEventListener('input', () => {
+    error.style.display = 'none';
+  });
+}
+
+/* ==========================================
    INIT
    ========================================== */
-document.addEventListener('DOMContentLoaded', async () => {
+async function initApp() {
   initDateDisplay();
   initNav();
   initForm();
@@ -117,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (carried > 0) {
     showToast(`${carried} task${carried === 1 ? '' : 's'} carried over from previous days`);
   }
-});
+}
 
 function setLoading(active) {
   document.getElementById('loading-today').classList.toggle('active', active);
