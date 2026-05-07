@@ -293,6 +293,18 @@ function renderCompletedTasks(tasks) {
   tasks.forEach(t => container.appendChild(createTaskEl(t)));
 }
 
+function updateEmptyState() {
+  const pending    = document.getElementById('pending-tasks');
+  const emptyState = document.getElementById('empty-pending');
+  const hasTasks   = !!pending.querySelector('.task-item');
+  emptyState.style.display = hasTasks ? 'none' : 'block';
+}
+
+function updateCompletedCount() {
+  const n = document.getElementById('completed-tasks').querySelectorAll('.task-item').length;
+  document.getElementById('completed-count').textContent = n;
+}
+
 function createTaskEl(task) {
   const item = document.createElement('div');
   item.className = 'task-item' + (task.status === 'done' ? ' done' : '');
@@ -313,12 +325,30 @@ function createTaskEl(task) {
     </div>
   `;
 
-  item.querySelector('.task-checkbox').addEventListener('change', async e => {
-    await toggleTask(task.id, e.target.checked);
+  item.querySelector('.task-checkbox').addEventListener('change', e => {
+    const done = e.target.checked;
+    item.classList.toggle('done', done);
+    // Move element in-place — no re-fetch, no flicker
+    const dest = done
+      ? document.getElementById('completed-tasks')
+      : document.getElementById('pending-tasks');
+    dest.appendChild(item);
+    updateEmptyState();
+    updateCompletedCount();
+    // PATCH runs in background; revert DOM on failure
+    dbPatch('todos', { 'id': `eq.${task.id}` }, { status: done ? 'done' : 'pending' })
+      .catch(() => {
+        e.target.checked = !done;
+        item.classList.toggle('done', !done);
+        const revert = !done
+          ? document.getElementById('completed-tasks')
+          : document.getElementById('pending-tasks');
+        revert.appendChild(item);
+        updateEmptyState();
+        updateCompletedCount();
+      });
   });
-  item.querySelector('.btn-delete').addEventListener('click', async () => {
-    await deleteTask(task.id);
-  });
+  item.querySelector('.btn-delete').addEventListener('click', () => deleteTask(task.id));
 
   return item;
 }
@@ -326,22 +356,12 @@ function createTaskEl(task) {
 /* ==========================================
    TASK ACTIONS
    ========================================== */
-async function toggleTask(id, checked) {
-  try {
-    await dbPatch('todos', { 'id': `eq.${id}` }, { status: checked ? 'done' : 'pending' });
-    await loadTodayTasks();
-  } catch (err) {
-    console.error('Toggle failed:', err);
-  }
-}
-
-async function deleteTask(id) {
-  try {
-    await dbDelete('todos', { 'id': `eq.${id}` });
-    await loadTodayTasks();
-  } catch (err) {
-    console.error('Delete failed:', err);
-  }
+function deleteTask(id) {
+  const item = document.querySelector(`.task-item[data-id="${id}"]`);
+  if (item) item.remove();
+  updateEmptyState();
+  updateCompletedCount();
+  dbDelete('todos', { 'id': `eq.${id}` }).catch(err => console.error('Delete failed:', err));
 }
 
 /* ==========================================
