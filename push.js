@@ -1,11 +1,23 @@
 /* ==========================================
-   SUPABASE INIT
+   SUPABASE REST — direct fetch, explicit headers
    ========================================== */
 const SUPABASE_URL = 'https://nvidmaogvugzbivsvtjh.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_oJUKziOZ1PRb1kr7JKhbJQ_GAoNj6aS';
+const REST = `${SUPABASE_URL}/rest/v1`;
 
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+async function dbPost(path, rows) {
+  const res = await fetch(`${REST}/${path}`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify(Array.isArray(rows) ? rows : [rows]),
+  });
+  if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
+}
 
 /* ==========================================
    URL PARAMETER SCHEMA
@@ -38,16 +50,12 @@ function parseLocalDate(dateStr) {
 }
 
 function formatDayLabel(dateStr) {
-  return parseLocalDate(dateStr)
-    .toLocaleDateString('en-US', { weekday: 'long' })
-    .toUpperCase();
+  return parseLocalDate(dateStr).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
 }
 
 function formatDateLong(dateStr) {
   return parseLocalDate(dateStr).toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    day: 'numeric', month: 'long', year: 'numeric',
   });
 }
 
@@ -133,25 +141,21 @@ async function confirmPush(date, tasks) {
   btn.disabled = true;
   btn.textContent = 'Pushing…';
 
-  const rows = tasks.map(t => ({
-    date,
-    text: t.text.trim(),
-    category: t.category?.trim() || null,
-    note: t.note?.trim() || null,
-    status: 'pending',
-    carried_over: false,
-  }));
-
-  const { error } = await db.from('todos').insert(rows);
-
-  if (error) {
+  try {
+    await dbPost('todos', tasks.map(t => ({
+      date,
+      text: t.text.trim(),
+      category: t.category?.trim() || null,
+      note: t.note?.trim() || null,
+      status: 'pending',
+      carried_over: false,
+    })));
+    window.location.href = 'index.html';
+  } catch (err) {
     btn.disabled = false;
     btn.textContent = 'Confirm & Push';
-    showError('Supabase insert failed', error.message);
-    return;
+    showError('Supabase insert failed', err.message);
   }
-
-  window.location.href = 'index.html';
 }
 
 /* ==========================================
