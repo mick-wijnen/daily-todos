@@ -79,6 +79,14 @@ function formatDateLong(dateStr) {
   });
 }
 
+/* active date — earliest date ≥ today with pending tasks; updated on each load */
+let activeDate = getToday();
+
+function setDateDisplay(dateStr) {
+  document.getElementById('day-label').textContent = formatDayLabel(dateStr);
+  document.getElementById('date-heading').textContent = formatDateLong(dateStr);
+}
+
 /* ==========================================
    TOAST
    ========================================== */
@@ -116,9 +124,7 @@ function setLoading(active) {
 }
 
 function initDateDisplay() {
-  const today = getToday();
-  document.getElementById('day-label').textContent = formatDayLabel(today);
-  document.getElementById('date-heading').textContent = formatDateLong(today);
+  setDateDisplay(getToday()); // placeholder until tasks load
 }
 
 /* ==========================================
@@ -172,7 +178,7 @@ async function addTask() {
 
   try {
     await dbPost('todos', {
-      date: getToday(),
+      date: activeDate,
       text,
       category: category || null,
       note: note || null,
@@ -233,17 +239,29 @@ async function carryOverTasks() {
 }
 
 /* ==========================================
-   LOAD TODAY'S TASKS
+   LOAD TASKS
+   Queries all todos from today onwards (date >= today),
+   then displays the earliest date that has pending tasks.
+   This means tasks prepared the evening before for tomorrow
+   appear as soon as you open the app the next day.
    ========================================== */
 async function loadTodayTasks() {
+  const today = getToday();
   try {
-    const data = await dbGet('todos', {
-      'date': `eq.${getToday()}`,
-      'order': 'created_at.asc',
+    const upcoming = await dbGet('todos', {
+      'date': `gte.${today}`,
+      'order': 'date.asc,created_at.asc',
     });
 
-    renderPendingTasks(data.filter(t => t.status === 'pending'));
-    renderCompletedTasks(data.filter(t => t.status === 'done'));
+    // Pick the earliest date that has at least one pending task; fall back to today
+    const firstPending = upcoming.find(t => t.status === 'pending');
+    activeDate = firstPending ? firstPending.date : today;
+
+    setDateDisplay(activeDate);
+
+    const forDate = upcoming.filter(t => t.date === activeDate);
+    renderPendingTasks(forDate.filter(t => t.status === 'pending'));
+    renderCompletedTasks(forDate.filter(t => t.status === 'done'));
   } catch (err) {
     console.error('Load tasks failed:', err);
     showToast('Could not load tasks.');
