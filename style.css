@@ -645,6 +645,102 @@ input, select, textarea, button {
 }
 
 /* ==========================================
+   PUSH PAGE
+   ========================================== */
+.push-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.push-date-label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.push-task-count {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+
+.push-heading {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+
+.push-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 28px;
+}
+
+.push-task-item {
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 13px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.push-task-num {
+  font-size: 11px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  margin-top: 2px;
+  min-width: 18px;
+  text-align: right;
+}
+
+.push-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-confirm {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 24px;
+  background: var(--green);
+  color: var(--black);
+  border: none;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s, transform 0.12s;
+}
+
+.btn-confirm:hover  { opacity: 0.88; transform: translateY(-1px); }
+.btn-confirm:active { transform: translateY(0); }
+.btn-confirm:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.push-error {
+  background: var(--red-dim);
+  border: 1px solid rgba(255, 75, 75, 0.25);
+  border-radius: var(--radius-md);
+  color: var(--red);
+  font-size: 13px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.push-error strong {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* ==========================================
    RESPONSIVE
    ========================================== */
 @media (max-width: 520px) {

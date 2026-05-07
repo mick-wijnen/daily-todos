@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Push Tasks — IENAI Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo">
+          <span class="logo-dot purple"></span>
+          <span class="logo-dot green"></span>
+        </div>
+        <span class="brand-name">IENAI Space</span>
+      </div>
+      <a href="index.html" class="nav-btn" style="text-decoration:none">← Back</a>
+    </header>
+
+    <main class="app-main">
+      <div id="push-error" class="push-error" style="display:none">
+        <strong id="push-error-title">Could not load tasks</strong>
+        <span id="push-error-body"></span>
+      </div>
+
+      <div id="push-content" style="display:none">
+        <div class="push-meta">
+          <span class="push-date-label" id="push-date-label"></span>
+          <span class="push-task-count" id="push-task-count"></span>
+        </div>
+        <h1 class="push-heading" id="push-heading"></h1>
+
+        <div class="push-preview" id="push-preview"></div>
+
+        <div class="push-actions">
+          <a href="index.html" class="btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;padding:10px 18px">Cancel</a>
+          <button class="btn-confirm" id="btn-confirm">Confirm &amp; Push</button>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="push.js"></script>
+</body>
+</html>
