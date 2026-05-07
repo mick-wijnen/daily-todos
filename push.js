@@ -150,7 +150,7 @@ async function confirmPush(date, tasks) {
       status: 'pending',
       carried_over: false,
     })));
-    window.location.href = 'index.html';
+    window.location.href = 'https://mick-wijnen.github.io/daily-todos/';
   } catch (err) {
     btn.disabled = false;
     btn.textContent = 'Confirm & Push';
